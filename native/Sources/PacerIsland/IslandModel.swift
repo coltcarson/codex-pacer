@@ -441,7 +441,7 @@ final class IslandModel: ObservableObject {
     /// Every service's ring is on until the user turns it off; a stored
     /// choice, on or off, always wins.
     static func progressRingEnabled(_ key: String, in defaults: UserDefaults) -> Bool {
-        defaults.object(forKey: key) as? Bool ?? true
+        defaults.object(forKey: key) as? Bool ?? false
     }
     @Published private(set) var deepseekProgressSetup: DeepSeekProgressSetupStatus?
     private var deepseekProgressQueue = ProgressSetupQueue<DeepSeekProgressSetup.Target>()
@@ -1859,7 +1859,7 @@ final class IslandModel: ObservableObject {
     }
     var rate: Double? { overview.displayedRate }
     var rateIsFresh: Bool { overview.rateIsFresh }
-    var monitorsSSH: Bool { defaults.object(forKey: "monitorSSH") == nil || defaults.bool(forKey: "monitorSSH") }
+    var monitorsSSH: Bool { defaults.bool(forKey: "monitorSSH") }
     /// Dot tasks are opt-in; see `migrateDurableSwitch`.
     nonisolated static let monitorsDurableKey = "monitorDurable"
     var monitorsDurable: Bool { defaults.bool(forKey: Self.monitorsDurableKey) }

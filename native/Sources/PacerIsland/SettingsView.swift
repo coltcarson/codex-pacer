@@ -47,15 +47,15 @@ struct SettingsView: View {
     @State private var claudeWindowID = UserDefaults.standard.string(forKey: "claudeQuotaWindowID") ?? "auto"
     @State private var completedRetention = UserDefaults.standard.object(forKey: "completedRetentionMinutes") as? Int ?? 30
     @State private var hideProjects = UserDefaults.standard.bool(forKey: "hideProjects")
-    @State private var monitorSSH = UserDefaults.standard.object(forKey: "monitorSSH") == nil || UserDefaults.standard.bool(forKey: "monitorSSH")
+    @State private var monitorSSH = UserDefaults.standard.bool(forKey: "monitorSSH")
     @State private var monitorDurable = UserDefaults.standard.bool(forKey: IslandModel.monitorsDurableKey)
     /// Shared with the update note, which can change them while this is open.
     @AppStorage(IslandModel.showsEmbeddedClaudeSessionsKey) private var showEmbeddedClaudeSessions = true
     @AppStorage(IslandModel.showsEmbeddedCodexSessionsKey) private var showEmbeddedCodexSessions = true
     @AppStorage(IslandModel.showsClaudeCloudProjectsKey) private var showClaudeCloudProjects = true
-    @AppStorage(IslandModel.claudeProgressRingKey) private var claudeProgressRing = true
-    @AppStorage(IslandModel.codexProgressRingKey) private var codexProgressRing = true
-    @AppStorage(IslandModel.deepseekProgressRingKey) private var deepseekProgressRing = true
+    @AppStorage(IslandModel.claudeProgressRingKey) private var claudeProgressRing = false
+    @AppStorage(IslandModel.codexProgressRingKey) private var codexProgressRing = false
+    @AppStorage(IslandModel.deepseekProgressRingKey) private var deepseekProgressRing = false
     @AppStorage(IslandModel.showsAppButtonsKey) private var showsAppButtons = true
     @State private var language = LanguagePreference.load()
     @State private var languageError: String?
