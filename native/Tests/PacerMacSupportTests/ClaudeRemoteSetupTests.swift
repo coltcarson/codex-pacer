@@ -181,6 +181,13 @@ final class ClaudeRemoteSetupTests: XCTestCase {
         XCTFail("owned setup process did not start"); throw ClaudeRemoteSetup.Failure.setupFailed
     }
 
+    /// Stops a helper without `waitUntilExit()`, which can block forever on a
+    /// cooperative thread and stall the whole suite: the wait is bounded.
+    private static func stop(_ process: Process, exited: DispatchSemaphore) {
+        if process.isRunning { process.terminate() }
+        if exited.wait(timeout: .now() + 5) == .timedOut { _ = Darwin.kill(process.processIdentifier, SIGKILL) }
+    }
+
     private func assertExited(_ pid: Int32) async throws {
         if try await TestWait.until({ Darwin.kill(pid, 0) != 0 && errno == ESRCH }) { return }
         XCTFail("owned setup process remained alive")
@@ -211,7 +218,10 @@ final class ClaudeRemoteSetupTests: XCTestCase {
         let unrelated = Process()
         unrelated.executableURL = URL(fileURLWithPath: "/usr/bin/env"); unrelated.arguments = ["python3", "-c", "import time;time.sleep(30)"]
         unrelated.standardOutput = FileHandle.nullDevice; unrelated.standardError = FileHandle.nullDevice
-        try unrelated.run(); defer { if unrelated.isRunning { unrelated.terminate() }; unrelated.waitUntilExit() }
+        let unrelatedExited = DispatchSemaphore(value: 0)
+        unrelated.terminationHandler = { _ in unrelatedExited.signal() }
+        try unrelated.run()
+        defer { Self.stop(unrelated, exited: unrelatedExited) }
         // Include a cold interpreter launch in the fixture budget. A 600 ms
         // deadline could kill it before the PID/ignored-SIGTERM marker, testing
         // startup scheduling instead of cleanup of an already hung peer.

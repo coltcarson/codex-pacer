@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Mac: SSH host monitoring is off until you turn it on in **Remote**. Before, Pacer connected to every SSH host set up in Codex or Claude Desktop on first launch and added its hooks and Claude settings there without asking.
+- Mac: The Claude, Codex, DeepSeek and WorkBuddy progress rings are off until you turn them on, on the welcome guide's last page or each service's page. Each ring adds a tool to that agent's settings. A choice you already saved is kept.
+- Mac: The daily update check is off until you turn on **Automatically Check for Updates** in **Help & Updates**. **Check for Updates** still works at any time.
+
 ## 4.6.2
 
 - Mac and Windows: In a Codex Desktop chat set to Approve for Me, a task no longer shows that it waits for your approval while Codex reviews the request itself. The alert used to appear for each such command and vanish a few seconds later.

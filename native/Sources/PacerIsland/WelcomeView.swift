@@ -23,9 +23,9 @@ struct WelcomeView: View {
     @State private var forward = true
     @State private var modules = ProviderModules.load()
     @State private var showsMoreModules = false
-    @AppStorage(IslandModel.claudeProgressRingKey) private var claudeRing = true
-    @AppStorage(IslandModel.codexProgressRingKey) private var codexRing = true
-    @AppStorage(IslandModel.deepseekProgressRingKey) private var deepseekRing = true
+    @AppStorage(IslandModel.claudeProgressRingKey) private var claudeRing = false
+    @AppStorage(IslandModel.codexProgressRingKey) private var codexRing = false
+    @AppStorage(IslandModel.deepseekProgressRingKey) private var deepseekRing = false
     /// Read so a mode chosen here, or a drag of the island, redraws the cards.
     @AppStorage("islandDisplayMode") private var displayModeValue = ""
     @Environment(\.accessibilityReduceMotion) private var reduceMotion

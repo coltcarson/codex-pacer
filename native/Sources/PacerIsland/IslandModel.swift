@@ -438,10 +438,10 @@ final class IslandModel: ObservableObject {
     static let claudeProgressRingKey = "claudeProgressRing"
     static let codexProgressRingKey = "codexProgressRing"
     static let deepseekProgressRingKey = "deepseekProgressRing"
-    /// Every service's ring is on until the user turns it off; a stored
-    /// choice, on or off, always wins.
+    /// Every service's ring is off until the user turns it on, because turning
+    /// one on edits that agent's settings; a stored choice, on or off, always wins.
     static func progressRingEnabled(_ key: String, in defaults: UserDefaults) -> Bool {
-        defaults.object(forKey: key) as? Bool ?? true
+        defaults.object(forKey: key) as? Bool ?? false
     }
     @Published private(set) var deepseekProgressSetup: DeepSeekProgressSetupStatus?
     private var deepseekProgressQueue = ProgressSetupQueue<DeepSeekProgressSetup.Target>()
@@ -851,8 +851,9 @@ final class IslandModel: ObservableObject {
         }
         return status
     }
-    /// Shared with Windows: modules whose progress ring is turned off. Rings
-    /// are on until the user turns them off.
+    /// Shared with Windows: modules whose progress ring is turned off. On the
+    /// Mac, rings are off until a list is stored, so a missing key means every
+    /// module's ring is off; an empty list means all are on.
     static let disabledHarnessProgressKey = "disabledHarnessProgress"
     /// Shared with Windows: modules whose task rows hide each turn's credits.
     static let hiddenTurnCreditsKey = "hiddenTurnCredits"
@@ -880,7 +881,8 @@ final class IslandModel: ObservableObject {
         receiveHarnessCredits(provider)
     }
     func showsHarnessProgress(_ provider: AgentProvider) -> Bool {
-        !(defaults.stringArray(forKey: Self.disabledHarnessProgressKey) ?? []).contains(provider.rawValue)
+        guard let disabled = defaults.stringArray(forKey: Self.disabledHarnessProgressKey) else { return false }
+        return !disabled.contains(provider.rawValue)
     }
     var hiddenTurnCredits: Set<AgentProvider> {
         Set((defaults.stringArray(forKey: Self.hiddenTurnCreditsKey) ?? []).compactMap(AgentProvider.init(rawValue:)))
@@ -1161,7 +1163,7 @@ final class IslandModel: ObservableObject {
         }
         return providers
     }
-    /// Claude's self-reported progress ring; on until the user turns it off.
+    /// Claude's self-reported progress ring; off until the user turns it on.
     var showsClaudeProgressRing: Bool { Self.progressRingEnabled(Self.claudeProgressRingKey, in: defaults) }
     /// The setting the last settings pass applied, so a switch reaches SSH hosts once.
     private var appliedClaudeProgressRing = false
@@ -1859,7 +1861,7 @@ final class IslandModel: ObservableObject {
     }
     var rate: Double? { overview.displayedRate }
     var rateIsFresh: Bool { overview.rateIsFresh }
-    var monitorsSSH: Bool { defaults.object(forKey: "monitorSSH") == nil || defaults.bool(forKey: "monitorSSH") }
+    var monitorsSSH: Bool { defaults.bool(forKey: "monitorSSH") }
     /// Dot tasks are opt-in; see `migrateDurableSwitch`.
     nonisolated static let monitorsDurableKey = "monitorDurable"
     var monitorsDurable: Bool { defaults.bool(forKey: Self.monitorsDurableKey) }

@@ -32,9 +32,11 @@ final class ModuleLibrarySettingsTests: XCTestCase {
         XCTAssertEqual(SettingsPane(stored: "modules"), .modules)
     }
 
-    func testProgressRingsAreOnUntilListedAndTurnCreditsShowUntilHidden() throws {
+    func testProgressRingsAreOffUntilChosenAndTurnCreditsShowUntilHidden() throws {
         let (model, defaults) = try model()
-        XCTAssertTrue(model.showsHarnessProgress(.workbuddy), "A new module's ring is on without any saved choice")
+        XCTAssertFalse(model.showsHarnessProgress(.workbuddy), "A new module's ring is off without any saved choice")
+        defaults.set([String](), forKey: IslandModel.disabledHarnessProgressKey)
+        XCTAssertTrue(model.showsHarnessProgress(.workbuddy), "A stored list turns on every module it leaves out")
         defaults.set(["workbuddy"], forKey: IslandModel.disabledHarnessProgressKey)
         XCTAssertFalse(model.showsHarnessProgress(.workbuddy))
         XCTAssertTrue(model.hiddenTurnCredits.isEmpty)
@@ -97,6 +99,7 @@ final class ModuleLibrarySettingsTests: XCTestCase {
         var modules = ProviderModules()
         modules.setMode(.enabled, for: .workbuddy); modules.setMode(.enabled, for: .workbuddyAI)
         modules.save(to: defaults)
+        defaults.set([String](), forKey: IslandModel.disabledHarnessProgressKey)
         model.applySettings(sourceChanged: false)
         XCTAssertNil(model.progressGuide(.claude), "Only a module whose app trusts Pacer's tool has the card")
         XCTAssertNil(model.progressGuide(.workbuddy), "No card before setup reports back")

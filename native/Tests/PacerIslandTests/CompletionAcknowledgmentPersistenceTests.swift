@@ -26,6 +26,7 @@ final class CompletionAcknowledgmentPersistenceTests: XCTestCase {
         defaults.set(directory.path, forKey: "codexHome")
         defaults.set(directory.appendingPathComponent("claude-home").path, forKey: "claudeHome")
         defaults.set("family-fixture", forKey: "claudeSSHHosts")
+        defaults.set(true, forKey: "monitorSSH")
         defaults.set(0, forKey: "completedRetentionMinutes")
         ProviderModules(codexMode: .enabled, claudeMode: .enabled).save(to: defaults)
         let host = "remote-ssh-discovered:family-fixture"
@@ -117,6 +118,7 @@ final class CompletionAcknowledgmentPersistenceTests: XCTestCase {
                     defaults.set(directory.path, forKey: "codexHome")
                     defaults.set(directory.appendingPathComponent("claude-home").path, forKey: "claudeHome")
                     defaults.set("synthetic-ack", forKey: "claudeSSHHosts")
+                    defaults.set(true, forKey: "monitorSSH")
                     defaults.set(0, forKey: "completedRetentionMinutes")
                     ProviderModules(codexMode: .enabled, claudeMode: .enabled, deepseekMode: .enabled).save(to: defaults)
                     let host = "remote-ssh-discovered:synthetic-ack"
@@ -175,6 +177,7 @@ final class CompletionAcknowledgmentPersistenceTests: XCTestCase {
                     try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
                     defaults.set(directory.path, forKey: "codexHome")
                     defaults.set(0, forKey: "completedRetentionMinutes")
+                    defaults.set(true, forKey: "monitorSSH")
                     ProviderModules(codexMode: .enabled, claudeMode: .disabled).save(to: defaults)
                     let host = "remote-ssh-discovered:scope-fixture", session = "019a0000-0000-7000-8000-000000000904"
                     func configuration(_ remoteHome: String) throws {
