@@ -81,7 +81,7 @@ Codex, Claude Code, DeepSeek Harness and WorkBuddy each report how much of your 
 | An amber disc | The task needs your reply or approval. |
 | A full ring and a check | The request is done. |
 
-Estimates are the agent's own guess, so a ring can move back. Rings are on by default; turn them off for each service with **Progress Ring** on its page in the main window. Start a new session after turning a ring on.
+Estimates are the agent's own guess, so a ring can move back. On the Mac, rings are off until you turn them on, because each one adds a small tool to that agent's settings. Turn them on together on the welcome guide's last page, or for each service with **Progress Ring** on its page in the main window. On Windows they are on by default. Start a new session after turning a ring on.
 
 Codex tasks on SSH hosts, and in WSL on Windows, report too: Pacer sets reporting up on each connected host that runs Codex, including hosts added directly in Codex Desktop. Tasks that were already running pick it up once Codex reconnects to the host.
 
@@ -111,7 +111,7 @@ Spend made elsewhere on your account, such as web searches or another device, is
 
 **WorkBuddy.** Pacer follows WorkBuddy's tasks on this computer: running work, questions waiting for you and finished turns. Click a task to return to its conversation. To see your credits, click **Sign In** on the WorkBuddy page; the window closes by itself once you're signed in. The page lists this month's credits, extra credits and the total, then what each kind has left and when it refreshes or expires. The **⋯** menu next to the account refreshes, switches account or signs out. History shows the credits you used each day of the last week. WorkBuddy AI, the international version, works the same way on its own page and account.
 
-The progress ring is on by default. The first time, the WorkBuddy page shows the steps under the switch, and each one ticks itself:
+Turn on **Progress Ring** on the WorkBuddy page to see progress (on Windows it is on by default). The first time, the page shows the steps under the switch, and each one ticks itself:
 
 1. Pacer adds its tool to WorkBuddy.
 2. WorkBuddy reads new tools only when it starts. If it was already open, click **Restart WorkBuddy**: Pacer closes it and opens it again at its connectors. If a WorkBuddy task is running, Pacer asks first.
@@ -123,7 +123,7 @@ Once you trust it, the steps fold away into one line: it works in new WorkBuddy 
 
 After you click **Open** or **Restart**, a small floating guide shows in the corner of your screen. WorkBuddy takes some seconds to start and show its connectors, so the guide first asks you to wait, then shows steps 4 and 5, each with a picture of what to click. It follows along as you click, even with Settings closed, and needs no permission. It closes by itself when you're done, or with its close button. If you turn the tool off or remove it in WorkBuddy and then turn the ring off and on, Pacer asks you to restart WorkBuddy so it reads the tool again. If a Pacer update changes the tool, WorkBuddy asks you to trust it again, and the sidebar, Overview and the expanded panel say so. Turning the ring off removes the tool. If WorkBuddy keeps its data elsewhere, choose the folder under **Custom Locations**.
 
-**SSH hosts.** Pacer follows the hosts you already use in Codex and Claude, including hosts added directly in Codex Desktop. A machine you reach through more than one entry is followed once. A host needs SSH access without a password prompt and Python 3. If a host disconnects, use **Retry** on the **Remote** page.
+**SSH hosts.** On the Mac, turn on **Monitor Tasks on SSH Hosts** on the **Remote** page first; it is off until you do, because Pacer adds its hooks and Claude settings on each host. Pacer then follows the hosts you already use in Codex and Claude, including hosts added directly in Codex Desktop. A machine you reach through more than one entry is followed once. A host needs SSH access without a password prompt and Python 3. If a host disconnects, use **Retry** on the **Remote** page.
 
 **WSL on Windows.** Turn on WSL monitoring in **Settings → Remote** when you need it. At least one distribution must be installed. Monitoring increases power use. Use **Refresh Now** after installing a distribution or to check which ones are running.
 
@@ -147,7 +147,7 @@ Click the gear in the expanded island to open the main window.
 | **General** | Open at Login, the Dock icon, language and **Hide Project Names** for screen sharing. |
 | **Help & Updates** | Updates, What's New and help. |
 
-Changes apply right away. When an update is available, it shows in the sidebar and on Overview; **Update and Restart** installs it.
+Changes apply right away. On the Mac, **Automatically Check for Updates** is off until you turn it on in **Help & Updates**; **Check for Updates** there works either way. When an update is available, it shows in the sidebar and on Overview; **Update and Restart** installs it.
 
 ## Privacy
 

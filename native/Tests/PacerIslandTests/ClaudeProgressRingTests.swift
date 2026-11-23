@@ -45,22 +45,34 @@ final class ClaudeProgressRingTests: XCTestCase {
     }
     private func exists(_ url: URL) -> Bool { FileManager.default.fileExists(atPath: url.path) }
 
-    func testEveryProvidersRingIsOnUntilItsOwnSettingTurnsItOff() throws {
+    func testEveryProvidersRingIsOffUntilItsOwnSettingTurnsItOn() throws {
         let fixture = try fixture()
         func providers() -> Set<AgentProvider> { fixture.model.taskPresentationOptions(for: []).progressRingProviders }
-        XCTAssertEqual(providers(), [.claude, .codex, .deepseek, .workbuddy, .workbuddyAI], "A user who never chose sees every ring")
-        fixture.defaults.set(false, forKey: IslandModel.claudeProgressRingKey)
-        XCTAssertEqual(providers(), [.codex, .deepseek, .workbuddy, .workbuddyAI])
-        fixture.defaults.set(false, forKey: IslandModel.deepseekProgressRingKey)
-        XCTAssertEqual(providers(), [.codex, .workbuddy, .workbuddyAI])
+        XCTAssertEqual(providers(), [], "A user who never chose sees no ring, so nothing edits their agents' settings")
+        XCTAssertFalse(fixture.model.showsHarnessProgress(.workbuddy))
+        fixture.defaults.set([String](), forKey: IslandModel.disabledHarnessProgressKey)
+        XCTAssertEqual(providers(), [.workbuddy, .workbuddyAI], "A stored empty list turns every local module's ring on")
         fixture.defaults.set(["workbuddy"], forKey: IslandModel.disabledHarnessProgressKey)
-        XCTAssertEqual(providers(), [.codex, .workbuddyAI], "Each edition's ring is off only once listed")
-        fixture.defaults.set(["workbuddy", "workbuddy-ai"], forKey: IslandModel.disabledHarnessProgressKey)
-        XCTAssertEqual(providers(), [.codex])
-        fixture.defaults.set(false, forKey: IslandModel.codexProgressRingKey)
-        XCTAssertEqual(providers(), [])
+        XCTAssertEqual(providers(), [.workbuddyAI], "Each edition's ring is off only once listed")
         fixture.defaults.set(true, forKey: IslandModel.claudeProgressRingKey)
-        XCTAssertEqual(providers(), [.claude], "A stored choice wins over the default either way")
+        XCTAssertEqual(providers(), [.claude, .workbuddyAI])
+        fixture.defaults.set(true, forKey: IslandModel.deepseekProgressRingKey)
+        fixture.defaults.set(true, forKey: IslandModel.codexProgressRingKey)
+        XCTAssertEqual(providers(), [.claude, .codex, .deepseek, .workbuddyAI])
+        fixture.defaults.set(false, forKey: IslandModel.claudeProgressRingKey)
+        XCTAssertEqual(providers(), [.codex, .deepseek, .workbuddyAI], "A stored choice wins over the default either way")
+    }
+
+    /// SSH hosts get hooks and Claude settings edits, so a user who never
+    /// chose is not followed on them; a stored choice always wins.
+    func testSSHMonitoringIsOffUntilTheUserTurnsItOn() throws {
+        let fixture = try fixture()
+        fixture.defaults.removeObject(forKey: "monitorSSH")
+        XCTAssertFalse(fixture.model.monitorsSSH)
+        fixture.defaults.set(true, forKey: "monitorSSH")
+        XCTAssertTrue(fixture.model.monitorsSSH)
+        fixture.defaults.set(false, forKey: "monitorSSH")
+        XCTAssertFalse(fixture.model.monitorsSSH)
     }
 
     /// Registration runs Codex against a real profile, so a demo or a model

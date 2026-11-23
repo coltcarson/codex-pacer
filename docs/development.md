@@ -392,7 +392,7 @@ Every task row draws one 28-pt status icon: a glyph for what the task is doing, 
 
 ### Reporting
 
-Every ring is on by default (WorkBuddy's unless listed in `disabledHarnessProgress`); WorkBuddy's adds Pacer’s tool there. Each provider reports through a tool that accepts one integer from 0 to 100. Pacer reads the successful call from the provider’s own records and keeps only the estimate, bounded identifiers and timestamps.
+On the Mac every ring is off until the user turns it on: a missing `claudeProgressRing`, `codexProgressRing` or `deepseekProgressRing` key reads as off, and a missing `disabledHarnessProgress` list counts every local module as off (a stored list, even an empty one, wins). `monitorSSH` is likewise off until stored. Windows keeps rings and SSH on by default. WorkBuddy's ring adds Pacer’s tool there. Each provider reports through a tool that accepts one integer from 0 to 100. Pacer reads the successful call from the provider’s own records and keeps only the estimate, bounded identifiers and timestamps.
 
 Every module asks in the same words, `ProgressPrompt` in Core. The same text appears in three places:
 - Claude's per-request line, which names the tool and adds how to find a deferred one;

@@ -2,7 +2,7 @@
 
 Pacer uses Sparkle 2.10.0, pinned in `native/Package.swift` and `native/Package.resolved`. The framework is embedded in `Contents/Frameworks`, with its helper tools signed before the application. The minimum OS remains macOS 14.
 
-The default is one background check per day, followed by user-confirmed download and installation. Settings can disable automatic checks without disabling the manual action. Sparkle owns scheduling and the installation/relaunch flow. Pacer retains its normal shutdown path so activity collectors stop and the single-instance lock is released before relaunch.
+`SUEnableAutomaticChecks` is false, so a Mac install checks only when the user asks until **Automatically Check for Updates** is turned on; then it checks once per day, followed by user-confirmed download and installation. The feed and signing key still belong to the upstream release owner, so every offered update is that owner's build. Settings can turn automatic checks off again without disabling the manual action. Windows still checks on its own schedule. Sparkle owns scheduling and the installation/relaunch flow. Pacer retains its normal shutdown path so activity collectors stop and the single-instance lock is released before relaunch.
 
 ## Update source and keys
 

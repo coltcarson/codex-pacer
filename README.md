@@ -55,7 +55,7 @@ Collapsed, Pacer is a slim bar around the camera. **Hover** to expand it, **move
 
 **Windows.** Download the `x64` installer, or `arm64` on an ARM PC, and run it. No administrator rights are needed. The installer isn't code signed yet, so if SmartScreen appears, choose **More info → Run anyway**.
 
-On first launch a short guide helps you pick a layout and the services to follow. Pacer then updates itself; check any time in **Help & Updates**.
+On first launch a short guide helps you pick a layout and the services to follow. On the Mac, Pacer checks for updates only when you ask, or daily once you turn on **Automatically Check for Updates** in **Help & Updates**.
 
 ## Requirements
 

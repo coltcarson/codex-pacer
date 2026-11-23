@@ -77,7 +77,8 @@ struct SettingsView: View {
     }()
     @State private var pane = SettingsPane.load()
     /// Shared with Windows; each switch applies at once, like Codex's ring.
-    @State private var disabledHarnessProgress = Set(UserDefaults.standard.stringArray(forKey: IslandModel.disabledHarnessProgressKey) ?? [])
+    /// `nil` until a list is stored: every local module's ring is then off.
+    @State private var disabledHarnessProgress = UserDefaults.standard.stringArray(forKey: IslandModel.disabledHarnessProgressKey).map(Set.init)
     @State private var hiddenTurnCredits = Set(UserDefaults.standard.stringArray(forKey: IslandModel.hiddenTurnCreditsKey) ?? [])
     @State private var harnessHomes = UserDefaults.standard.dictionary(forKey: IslandModel.harnessHomesKey) as? [String: String] ?? [:]
     /// Modules as the switches stand now, before they are applied.
@@ -271,7 +272,7 @@ struct SettingsView: View {
 
     /// What a module's progress ring still needs from the user, while its ring is on.
     private func progressAttention(_ provider: AgentProvider) -> String? {
-        guard moduleEnabled(provider), !disabledHarnessProgress.contains(provider.rawValue),
+        guard moduleEnabled(provider), showsHarnessProgress(provider),
               let guide = model.progressGuide(provider), guide.attention else { return nil }
         return guide.summary
     }
@@ -369,9 +370,12 @@ struct SettingsView: View {
             MainCard { CardRow(title: L10n.text("main.module_off_hint")) }
         } else if let descriptor = model.localHarnessDescriptors.first(where: { $0.id == provider }) {
             SettingsHarnessSections(model: model, descriptor: descriptor,
-                showsProgress: Binding(get: { !disabledHarnessProgress.contains(provider.rawValue) }, set: { visible in
-                    if visible { disabledHarnessProgress.remove(provider.rawValue) } else { disabledHarnessProgress.insert(provider.rawValue) }
-                    UserDefaults.standard.set(disabledHarnessProgress.sorted(), forKey: IslandModel.disabledHarnessProgressKey)
+                showsProgress: Binding(get: { showsHarnessProgress(provider) }, set: { visible in
+                    var disabled = disabledHarnessProgress
+                        ?? Set(model.localHarnessDescriptors.filter(\.hasTaskProgress).map(\.id.rawValue))
+                    if visible { disabled.remove(provider.rawValue) } else { disabled.insert(provider.rawValue) }
+                    disabledHarnessProgress = disabled
+                    UserDefaults.standard.set(disabled.sorted(), forKey: IslandModel.disabledHarnessProgressKey)
                     model.refreshProgressPresentation()
                 }),
                 showsTurnCredits: Binding(get: { !hiddenTurnCredits.contains(provider.rawValue) }, set: { visible in
@@ -554,6 +558,11 @@ struct SettingsView: View {
     }
 
     private func moduleMode(_ provider: AgentProvider) -> ProviderModuleMode { modules.mode(for: provider) }
+    /// Whether a local module's ring is on in this window's copy of the setting.
+    private func showsHarnessProgress(_ provider: AgentProvider) -> Bool {
+        disabledHarnessProgress.map { !$0.contains(provider.rawValue) } ?? false
+    }
+
     private func moduleEnabled(_ provider: AgentProvider) -> Bool {
         switch moduleMode(provider) {
         case .automatic: return model.providerDetected(provider)

@@ -38,6 +38,7 @@ final class CodexRemoteProgressAutoSetupTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: domain))
         defaults.set(codexHome.path, forKey: "codexHome")
         defaults.set(true, forKey: "monitorSSH")
+        defaults.set(true, forKey: IslandModel.codexProgressRingKey)
         ProviderModules(codexMode: .enabled, claudeMode: .disabled).save(to: defaults)
         let model = IslandModel(demo: true, demoArguments: nil, defaults: defaults,
             installation: ProviderInstallationDetection(codexInstalled: false, claudeInstalled: false),
@@ -56,7 +57,7 @@ final class CodexRemoteProgressAutoSetupTests: XCTestCase {
         let on = await model.configureCodexRemoteProgress(target: fixture.target)
         XCTAssertEqual(on, CodexRemoteProgressSetup.Status(configured: true, conflict: false))
         var request = try fixture.request()
-        XCTAssertEqual(request["enabled"] as? Bool, true, "The ring is on until the user turns it off")
+        XCTAssertEqual(request["enabled"] as? Bool, true, "A ring the user turned on reaches the host")
         XCTAssertEqual(request["home"] as? String, "/srv/codex-home", "The tool goes into the host's Codex home, not the local one")
         XCTAssertFalse(((request["reporter"] as? String).flatMap { Data(base64Encoded: $0) } ?? Data()).isEmpty)
         XCTAssertEqual(CodexRemoteProgressSetup.configuredDigests(defaults: fixture.defaults)["fixture"],
